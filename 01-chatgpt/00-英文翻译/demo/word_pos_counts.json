@@ -1,0 +1,66 @@
+{
+  "Cgo": [
+    "NOUN"
+  ],
+  "calls": [
+    "NOUN"
+  ],
+  "take": [
+    "VERB"
+  ],
+  "about": [
+    "ADP",
+    "ADP"
+  ],
+  "40ns": [
+    "NOUN"
+  ],
+  ",": [
+    "PUNCT"
+  ],
+  "the": [
+    "DET"
+  ],
+  "same": [
+    "ADJ"
+  ],
+  "time": [
+    "NOUN"
+  ],
+  "encoding": [
+    "NOUN"
+  ],
+  "/": [
+    "SYM"
+  ],
+  "json": [
+    "PROPN"
+  ],
+  "takes": [
+    "VERB"
+  ],
+  "to": [
+    "PART"
+  ],
+  "parse": [
+    "VERB"
+  ],
+  "a": [
+    "DET"
+  ],
+  "single": [
+    "ADJ"
+  ],
+  "digit": [
+    "NOUN"
+  ],
+  "integer": [
+    "NOUN"
+  ],
+  ".": [
+    "PUNCT"
+  ],
+  "\n": [
+    "SPACE"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "cgo": {
+    "pos": "noun",
+    "chinese_translation": "刚果"
+  },
+  "calls": {
+    "pos": "noun",
+    "chinese_translation": "电话"
+  },
+  "take": {
+    "pos": "verb",
+    "chinese_translation": "带领"
+  },
+  "about": {
+    "pos": "adp",
+    "chinese_translation": "关于"
+  },
+  "the": {
+    "pos": "det",
+    "chinese_translation": "、"
+  },
+  "same": {
+    "pos": "adj",
+    "chinese_translation": "相同"
+  },
+  "time": {
+    "pos": "noun",
+    "chinese_translation": "time"
+  },
+  "encoding": {
+    "pos": "noun",
+    "chinese_translation": "编码方式"
+  },
+  "json": {
+    "pos": "propn",
+    "chinese_translation": "json"
+  },
+  "takes": {
+    "pos": "verb",
+    "chinese_translation": "吃"
+  },
+  "to": {
+    "pos": "part",
+    "chinese_translation": "更改为："
+  },
+  "parse": {
+    "pos": "verb",
+    "chinese_translation": "剖析"
+  },
+  "a": {
+    "pos": "det",
+    "chinese_translation": "a"
+  },
+  "single": {
+    "pos": "adj",
+    "chinese_translation": "单次"
+  },
+  "digit": {
+    "pos": "noun",
+    "chinese_translation": "标签和数字之间的空间"
+  },
+  "integer": {
+    "pos": "noun",
+    "chinese_translation": "整数"
+  }
+}

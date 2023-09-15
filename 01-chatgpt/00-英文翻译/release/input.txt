@@ -1,0 +1,1 @@
+Cgo calls take about 40ns, about the same time encoding/json takes to parse a single digit integer. 

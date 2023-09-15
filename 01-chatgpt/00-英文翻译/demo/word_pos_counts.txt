@@ -1,0 +1,44 @@
+["Cgo"]: NOUN, PROPN
+["calls"]: NOUN
+["take"]: VERB
+["about"]: ADP, ADP, ADV
+["40ns"]: NOUN
+[","]: PUNCT, PUNCT
+["the"]: DET
+["same"]: ADJ
+["time"]: NOUN
+["encoding"]: NOUN
+["/"]: SYM
+["json"]: PROPN
+["takes"]: VERB
+["to"]: PART, ADP
+["parse"]: VERB
+["a"]: DET
+["single"]: ADJ
+["digit"]: NOUN
+["integer"]: NOUN
+["."]: PUNCT, PUNCT
+["On"]: ADP
+["my"]: PRON
+["20"]: NUM
+["core"]: NOUN, NOUN
+["machine"]: NOUN
+["call"]: NOUN
+["performance"]: NOUN
+["scales"]: VERB
+["with"]: ADP
+["count"]: VERB
+["up"]: ADP
+["16"]: NUM
+["cores"]: NOUN
+["after"]: ADP
+["which"]: PRON
+["some"]: DET
+["known"]: VERB
+["contention"]: NOUN
+["issues"]: NOUN
+["slow"]: VERB
+["things"]: NOUN
+["down"]: ADP
+["
+"]: SPACE

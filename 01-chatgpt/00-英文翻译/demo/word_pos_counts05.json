@@ -1,0 +1,220 @@
+{
+  "Cgo": {
+    "pos": [
+      "noun",
+      "propn"
+    ]
+  },
+  "calls": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "take": {
+    "pos": [
+      "verb"
+    ]
+  },
+  "about": {
+    "pos": [
+      "adv",
+      "adp"
+    ]
+  },
+  "40ns": {
+    "pos": [
+      "noun"
+    ]
+  },
+  ",": {
+    "pos": [
+      "punct"
+    ]
+  },
+  "the": {
+    "pos": [
+      "det"
+    ]
+  },
+  "same": {
+    "pos": [
+      "adj"
+    ]
+  },
+  "time": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "encoding": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "/": {
+    "pos": [
+      "sym"
+    ]
+  },
+  "json": {
+    "pos": [
+      "propn"
+    ]
+  },
+  "takes": {
+    "pos": [
+      "verb"
+    ]
+  },
+  "to": {
+    "pos": [
+      "adp",
+      "part"
+    ]
+  },
+  "parse": {
+    "pos": [
+      "verb"
+    ]
+  },
+  "a": {
+    "pos": [
+      "det"
+    ]
+  },
+  "single": {
+    "pos": [
+      "adj"
+    ]
+  },
+  "digit": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "integer": {
+    "pos": [
+      "noun"
+    ]
+  },
+  ".": {
+    "pos": [
+      "punct"
+    ]
+  },
+  "On": {
+    "pos": [
+      "adp"
+    ]
+  },
+  "my": {
+    "pos": [
+      "pron"
+    ]
+  },
+  "20": {
+    "pos": [
+      "num"
+    ]
+  },
+  "core": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "machine": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "call": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "performance": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "scales": {
+    "pos": [
+      "verb"
+    ]
+  },
+  "with": {
+    "pos": [
+      "adp"
+    ]
+  },
+  "count": {
+    "pos": [
+      "verb"
+    ]
+  },
+  "up": {
+    "pos": [
+      "adp"
+    ]
+  },
+  "16": {
+    "pos": [
+      "num"
+    ]
+  },
+  "cores": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "after": {
+    "pos": [
+      "adp"
+    ]
+  },
+  "which": {
+    "pos": [
+      "pron"
+    ]
+  },
+  "some": {
+    "pos": [
+      "det"
+    ]
+  },
+  "known": {
+    "pos": [
+      "verb"
+    ]
+  },
+  "contention": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "issues": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "slow": {
+    "pos": [
+      "verb"
+    ]
+  },
+  "things": {
+    "pos": [
+      "noun"
+    ]
+  },
+  "down": {
+    "pos": [
+      "adp"
+    ]
+  },
+  "\n": {
+    "pos": [
+      "space"
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+import openpyxl
+
+# 打开本地的a.xlsx文件
+a_workbook = openpyxl.load_workbook('fetch_books_async_01.xlsx')
+
+# 创建一个字典，用于存储ID对应的EPUB下载链接和URL
+id_data = {}
+
+# 遍历a.xlsx中的所有Sheet
+for a_sheet in a_workbook.sheetnames:
+    sheet = a_workbook[a_sheet]
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        if len(row) >= 3:
+            id_field, epub_link, url, *_ = row  # 仅提取所需的字段，忽略多余的字段
+            if id_field is not None:
+                id_data[id_field] = {'epub_link': epub_link, 'url': url}
+
+# 打开books.xlsx文件
+books_workbook = openpyxl.load_workbook('books_async_11.xlsx')
+
+# 遍历books.xlsx中的所有Sheet
+for books_sheet in books_workbook.sheetnames:
+    sheet = books_workbook[books_sheet]
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        if len(row) >= 1:
+            id_field, *_ = row  # 仅提取所需的字段，忽略多余的字段
+            if id_field is not None:
+                data = id_data.get(id_field, None)
+                if data:
+                    epub_link, url = data['epub_link'], data['url']
+                    # 找到books.xlsx中的相应行并添加EPUB下载链接和URL
+                    sheet.append(['', '', '', '', '', epub_link, url])
+
+# 保存更新后的books.xlsx文件
+books_workbook.save('books_updated_01.xlsx')
+
+print("数据合并完成，已保存到 books_updated_01.xlsx 文件。")

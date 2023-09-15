@@ -1,0 +1,2 @@
+Cgo	calls	take	about	40ns	,	about	the	same	time	encoding	/	json	takes	to	parse	a	single	digit	integer	.	On	my	20	core	machine	Cgo	call	performance	scales	with	core	count	up	to	about	16	cores	,	after	which	some	known	contention	issues	slow	things	down	.	
+	NOUN	NOUN	VERB	ADP	NOUN	PUNCT	ADP	DET	ADJ	NOUN	NOUN	SYM	PROPN	VERB	PART	VERB	DET	ADJ	NOUN	NOUN	PUNCT	ADP	PRON	NUM	NOUN	NOUN	PROPN	NOUN	NOUN	VERB	ADP	NOUN	VERB	ADP	ADP	ADV	NUM	NOUN	PUNCT	ADP	PRON	DET	VERB	NOUN	NOUN	VERB	NOUN	ADP	PUNCT	SPACE	

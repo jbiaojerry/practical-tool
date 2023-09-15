@@ -1,0 +1,4 @@
+main	./ptags.py	/^def main(/
+ptags	./ptags.py	1
+spacy01	./spacy01.py	1
+treat_file	./ptags.py	/^def treat_file(/
