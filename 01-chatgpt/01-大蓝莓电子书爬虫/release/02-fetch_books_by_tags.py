@@ -17,6 +17,10 @@ async def fetch_html_content(session, url):
             print("Network error. Retrying...")
             await asyncio.sleep(2)  # 等待2秒后重新尝试连接
 
+def clean_sheet_title(title):
+    # 移除无效字符
+    return re.sub(r'[\\/*?:"<>|]', '', title)
+
 # 步骤 2：解析 HTML 内容并生成 URL 列表
 async def extract_urls(html_content, session, workbook):
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -33,12 +37,16 @@ async def extract_urls(html_content, session, workbook):
         if num > 0:
             page = 1
             while True:
-                if page == 1:
-                    page_url = f"https://www.dalanmei.com{href[:-5]}.html"
-                else:
-                    page_url = f"https://www.dalanmei.com{href[:-5]}-{page}.html"
+                if num <=0:
+                    break
                 
-                print(f"Fetching URL: {page_url}")  # 打印状态
+                if page == 1:
+                    page_url = f"https://www.dushupai.com{href[:-5]}.html"
+                else:
+                    page_url = f"https://www.dushupai.com{href[:-5]}-{page}.html"
+                
+                num -= 20
+                print(f"Fetching URL: {unquote(page_url)}, num: {num}")  # 打印状态
 
                 # 重新创建会话，以便继续下载 URL
                 async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as new_session:
@@ -57,10 +65,30 @@ async def extract_urls(html_content, session, workbook):
     
     # 将数据保存到 Excel
     for tag_name, book_info in tag_data.items():
-        sheet = workbook.create_sheet(tag_name)
-        sheet.append(["ID", "书名", "作者", "时间", "详情"])  # 添加ID字段
+         # 清理 tag_name
+        cleaned_tag_name = clean_sheet_title(tag_name)
+        sheet = workbook.create_sheet(cleaned_tag_name)
+        sheet.append(["ID", "书名", "作者", "时间", "详情", "下载链接", "图片"])  # 添加ID字段
         for info in book_info:
             sheet.append(info)
+
+# 函数用于处理下载链接URL的数据提取
+async def process_download_url(url, session):
+     while True:
+        try:
+            async with session.get(url) as response:
+                html_content = await response.text()
+                soup = BeautifulSoup(html_content, 'html.parser')
+
+                download_url_div = soup.find("div", id="download_url")
+                link_element = download_url_div.find("a", string="诚通网盘 提取码：8866")
+                link = link_element.get(
+                    "href") if link_element else "链接未找到"
+                print("download url:", link)
+                return link
+        except aiohttp.ClientError:
+            print("Network error. Retrying...")
+            await asyncio.sleep(2)  # 等待2秒后重新尝试连接
 
 # 函数用于处理单个URL的数据提取
 async def process_url(url, session, workbook):
@@ -84,11 +112,19 @@ async def process_url(url, session, workbook):
                                          class_='portfolio-line').find('div').text
                         link = item.find('div',
                                          class_='portfolio-title').find('a')['href']
+                        img = item.find('div', class_ = 'portfolio-thumb book').find('img')['src']
+                        print("==== img: ", img)
+                        link = f"https://www.dushupai.com{link}"
                         book_id = re.search(r'/book-content-(\d+)\.html',
                                             link).group(1)
+                        
+                        download_url = f"https://www.dushupai.com/download-book-{book_id}.html"
+                        # 重新创建会话，以便继续下载 URL
+                        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as new_session:
+                            download_link = await process_download_url(download_url, new_session)
+
                         book_info.append([
-                            book_id, title, author, time,
-                            f"https://www.dalanmei.com{link}"
+                            book_id, title, author, time, link, download_link, img
                         ])
 
                     tag_name = unquote(url.split('-')[2].split('.')[0], 'utf-8')
@@ -104,7 +140,7 @@ async def main():
     start_time = time.time()
 
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as session:  # 调整并发数量
-        url = "https://www.dalanmei.com/book-tags.html"
+        url = "https://www.dushupai.com/book-tags.html"
         html_content = await fetch_html_content(session, url)
     
     print("Step 1: HTML content fetched")
@@ -118,7 +154,7 @@ async def main():
     workbook.remove(workbook['Sheet'])
 
     # 保存 Excel 文件
-    workbook.save('02-fetch_books_by_tags_05.xlsx')
+    workbook.save('02-fetch_books_by_tags_1030.xlsx')
 
     end_time = time.time()
     print(f"Step 4: Data extraction completed. Execution time: {end_time - start_time:.2f} seconds")

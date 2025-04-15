@@ -40,8 +40,9 @@ with open(os.path.join(ebooks_directory, 'README.md'), 'w', encoding='utf-8') as
         md_filename = os.path.join(md_directory, f'{sheet_name}.md')
         with open(md_filename, 'w', encoding='utf-8') as md_file:
             # 写入工作表名称作为Markdown的一级标题
-            md_file.write(f'# {sheet_name}\n\n')
+            md_file.write(f'# 版权声明\n\n\t本站内容均从网上搜集，版权归著作人及版权方所有，如侵犯您的权益，请通知我们，我们将会及时删除！ 下载链接仅供宽带测试研究用途，请下载后在24小时内删除，请勿用于商业目的。请支持正版！\n\n')
 
+            md_file.write(f'# {sheet_name}\n\n')
             # 写入表头作为Markdown的表头
             md_file.write('| 书名 | epub | mobi | azw3 |\n')
             md_file.write('| --- | --- | --- | --- |\n')
