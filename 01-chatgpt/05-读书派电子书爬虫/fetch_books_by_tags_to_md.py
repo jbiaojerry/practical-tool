@@ -1,3 +1,4 @@
+from pdb import line_prefix
 import aiohttp
 import asyncio
 import openpyxl
@@ -7,11 +8,18 @@ from urllib.parse import unquote
 import time
 import os
 
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Connection': 'keep-alive',
+}
 # 步骤 1：从网页读取内容
 async def fetch_html_content(session, url):
+
     while True:
         try:
-            async with session.get(url) as response:
+            async with session.get(url, headers=headers) as response:
                 html_content = await response.text()
             return html_content
         except aiohttp.ClientError:
@@ -25,7 +33,25 @@ def clean_sheet_title(title):
 # 步骤 2：解析 HTML 内容并生成 URL 列表
 async def extract_urls(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
+    # Add debug print to see the HTML structure
+    # print("HTML content preview:", html_content[:500])
+    
+    # Try to find the correct div class
     block_tags_div = soup.find('div', class_='block-tags')
+    if block_tags_div is None:
+        print("Could not find div with class 'block-tags', trying alternative classes...")
+        # Try to find any div containing tags
+        all_divs = soup.find_all('div')
+        for div in all_divs:
+            if 'tags' in str(div.get('class', [])):
+                print(f"Found potential tags div with classes: {div.get('class')}")
+                block_tags_div = div
+                break
+    
+    if block_tags_div is None:
+        print("Could not find any tags div in the HTML content")
+        return
+
     a_tags = block_tags_div.find_all('a')
 
     tag_data = {}  # 以标签名称为键的字典
@@ -58,7 +84,7 @@ async def extract_urls(html_content):
 ## 如何使用
 
 浏览我们的下载宝库非常简单：
-1. 在下方目录索引点击关键词或者“Ctrl+f”搜索标签，以找到你感兴趣的电子书类型;
+1. 在下方目录索引点击关键词或者"Ctrl+f"搜索标签，以找到你感兴趣的电子书类型;
 2. 点击标签或搜索结果，即可进入详细的下载链接页面，点击书名可以查看图书封面;
 3. 在下载链接页面，你将找到包含epub、mobi、azw3格式的下载链接，点击下载即可。
 
@@ -82,29 +108,39 @@ async def extract_urls(html_content):
     tag_book_counts = {}
     for a_tag in a_tags:
         text = a_tag.get_text()
+        # print(f" ===== text: {text}") 
         href = a_tag['href']
-        num = int(text.split('(')[1].split(')')[0])
+        try:
+            num = int(text.split('(')[1].split(')')[0])
+            # print(f" ***** format: {text}")
+        except (IndexError, ValueError) as e:
+            # print(f" ***** Invalid format: {text}")
+            continue
+        # book_list_url = f"{base_url}{href}/book_list?tag={quote(text)}&sort=recommend&page_size=18&page=1"
         count = 0
         tag_data = {} 
 
         if num > 0:
             page = 1
             while True:
-                if num <=0:
+                if num <= 0:
                     break
+                
+                # print(f" 11111  num: {num}")  # 打印状态
                 
                 if page == 1:
                     page_url = f"https://www.dushupai.com{href[:-5]}.html"
                 else:
                     page_url = f"https://www.dushupai.com{href[:-5]}-{page}.html"
-                
-                num -= 20
-                print(f"Fetching URL: {unquote(page_url)}, num: {num}")  # 打印状态
 
+                print(f"Fetching URL: {unquote(page_url)}, num: {num}")  # 打印状态
+                num -= 20
+                
                 # 重新创建会话，以便继续下载 URL
                 async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as new_session:
                     result = await process_url(page_url, new_session)
-
+                
+                # print(f" 22222  result: {result}")  # 打印状态
                 if result is not None:
                     tag_name, book_info = result
                     if len(book_info) == 0:
@@ -142,7 +178,7 @@ async def extract_urls(html_content):
                     # _, title, author, _, _, download_link = info 
                     # 使用"书名"作为默认链接
                     md_file.write(
-                        f'| [{info[1]} (点击查看图片)]({info[6]}) | {info[2]} | [下载]({info[5]}) |\n'
+                        f'| [{info[1]} (点击查看图片)]({info[7]}) | {info[2]} | [下载]({info[5]}) | [迅雷下载]({info[6]}) |\n'
                     )
 
             print(f"Markdown文件 '{md_filename}' 已生成。")
@@ -166,16 +202,41 @@ async def extract_urls(html_content):
 async def process_download_url(url, session):
      while True:
         try:
-            async with session.get(url) as response:
+            async with session.get(url, headers=headers) as response:
                 html_content = await response.text()
                 soup = BeautifulSoup(html_content, 'html.parser')
+                # print("html_content:", html_content)
 
-                download_url_div = soup.find("div", id="download_url")
-                link_element = download_url_div.find("a", string="诚通网盘 提取码：8866")
-                link = link_element.get(
-                    "href") if link_element else "链接未找到"
-                print("download url:", link)
-                return link
+                # 创建 BeautifulSoup 对象
+                # soup = BeautifulSoup(html_content, 'html.parser')
+
+                # 使用正则表达式查找包含“ctfile”的 <a> 标签
+                a_tag = soup.find('a', {'rel': 'nofollow', 'href': re.compile(r'ctfile.*')})
+                # print("a_tag:", a_tag)
+                a_tag_thunder = soup.find('a', {'rel': 'nofollow', 'href': re.compile(r'xunlei.*')})
+
+                link = "链接未找到"
+                # 提取 href 属性
+                if a_tag:
+                    href = a_tag['href']
+                    link = href.replace("?pwd=", "?p=")
+                else:
+                    print("未找到匹配的链接")
+                
+                thunder_link = "链接未找到"
+                # 提取 href 属性
+                if a_tag_thunder:
+                    thunder_link = a_tag_thunder['href']
+                else:
+                    print("未找到匹配的链接")
+                # 查找下载链接所在的div元素
+                # download_url_div = soup.find("div", class_="download_blcok") if soup else None
+                # print("download_url_div:", download_url_div)
+                # link_element = download_url_div.find("a")
+                # link = link_element.get(
+                #     "href") if link_element else "链接未找到"
+                # print("download url:", link, thunder_link)
+                return link, thunder_link
         except aiohttp.ClientError:
             print("Network error. Retrying...")
             await asyncio.sleep(2)  # 等待2秒后重新尝试连接
@@ -184,8 +245,10 @@ async def process_download_url(url, session):
 async def process_url(url, session):
     while True:
         try:
-            async with session.get(url) as response:
+            # print("process_url:", url)
+            async with session.get(url, headers=headers) as response:
                 html_content = await response.text()
+                # print("html_content:", html_content)
                 soup = BeautifulSoup(html_content, 'html.parser')
 
                 portfolio_book_ul = soup.find('ul', class_='portfolio-book')
@@ -203,7 +266,7 @@ async def process_url(url, session):
                         link = item.find('div',
                                          class_='portfolio-title').find('a')['href']
                         img = item.find('div', class_ = 'portfolio-thumb book').find('img')['src']
-                        print("==== img: ", img)
+                        # print("==== img: ", img)
                         link = f"https://www.dushupai.com{link}"
                         book_id = re.search(r'/book-content-(\d+)\.html',
                                             link).group(1)
@@ -211,10 +274,10 @@ async def process_url(url, session):
                         download_url = f"https://www.dushupai.com/download-book-{book_id}.html"
                         # 重新创建会话，以便继续下载 URL
                         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as new_session:
-                            download_link = await process_download_url(download_url, new_session)
+                            download_link, download_link_thunder = await process_download_url(download_url, new_session)
 
                         book_info.append([
-                            book_id, title, author, time, link, download_link, img
+                            book_id, title, author, time, link, download_link, download_link_thunder, img
                         ])
 
                     tag_name = unquote(url.split('-')[2].split('.')[0], 'utf-8')
